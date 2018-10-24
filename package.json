@@ -1,0 +1,11 @@
+{
+  "name": "codemods",
+  "version": "1.0.0",
+  "description": "Codemods for DHIS2 libs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Viktor Varland",
+  "license": "BSD-3-Clause"
+}
