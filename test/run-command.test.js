@@ -19,7 +19,7 @@ describe('Command: run', () => {
     it('should replace the pre 31.1.0 d2 package path with the updated one', () => {
         const result = spawn.sync('./bin/d2-utils-codemods', [
             'run',
-            'codemods',
+            'cli-utils-codemods',
             //'d2-v31.1.0-change-imports',
             'rename-foo',
             PATH_RUN_ACTUAL,

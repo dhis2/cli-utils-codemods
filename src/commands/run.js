@@ -1,7 +1,8 @@
 const log = require('@dhis2/cli-helpers-engine').reporter
-const spawn = require('cross-spawn')
 const fs = require('fs-extra')
 const path = require('path')
+
+const { exec } = require('./run/exec')
 
 module.exports.command = 'run <package> <codemod> <files..>'
 module.exports.alias = 'r'
@@ -76,14 +77,17 @@ module.exports.handler = argv => {
 
     log.info('Starting running the codemod\n')
 
-    const result = spawn.sync('npx', [
-        '--no-install',
-        'jscodeshift',
-        '-t', // tells codeshift to transform files
-        scriptPath, // path to the codemod
-        ...files,
-        ...(forwardArgs || []).map(forwardArg => forwardArg.split('=')),
-    ], { stdio: 'inherit' })
+    const forward = (forwardArgs || [])
+        .map(forwardArg => forwardArg.split('='))
+        .map(([key, value]) => `--${key} ${value}`)
 
-    process.exit(result.status)
+    const positionalArguments = [
+        //'-t', // tells codeshift to transform files
+        //scriptPath, // path to the codemod
+        ...files,
+        ...forward,
+    ]
+
+    const result = exec({ transformFile: scriptPath, positionalArguments })
+    return result.then(({ error }) => process.exit(error))
 }
