@@ -52,21 +52,23 @@ module.exports.handler = argv => {
      * When not testing, we try to get the path from the config
      */
     let transformFile = codemodPath
-        ? codemodPath
+        ? codemodPath.match(/^\//)
+              ? codemodPath
+              : path.join(process.cwd(), codemodPath)
         : (() => {
-            const [error, codemod] = getCodemodByPackageAndName(
-                package,
-                name,
-                availableCodemods,
-            )
+              const [error, codemod] = getCodemodByPackageAndName(
+                  package,
+                  name,
+                  availableCodemods,
+              )
 
-            if (error) {
-                log.error(error)
-                process.exit(1)
-            }
+              if (error) {
+                  log.error(error)
+                  process.exit(1)
+              }
 
-            return codemod.path
-        })()
+              return codemod.path
+          })()
 
     const forward = (forwardArgs || [])
         .map(forwardArg => forwardArg.split('='))
