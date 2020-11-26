@@ -1,5 +1,7 @@
 const log = require('@dhis2/cli-helpers-engine').reporter
-const { availableCodemods } = require('../utils/codemods/availableCodemods')
+const { availableCodemods: availableCodemodsLocal } = require('../utils/codemods/availableCodemods')
+const { findAvailableCodemodsInNodeModules } = require('../utils/codemods/findAvailableCodemodsInNodeModules')
+const { mergeCodemods } = require('../utils/codemods/mergeCodemods')
 
 module.exports.command = 'list'
 module.exports.alias = 'l'
@@ -16,9 +18,20 @@ module.exports.builder = yargs => yargs
         type: 'string',
         default: '',
     })
+    .option('cwd', {
+        describe:
+            "The directory containing the project's node_modules directory",
+        type: 'string',
+        default: process.cwd(),
+    })
 
 module.exports.handler = argv => {
-    const { package, name, group } = argv
+    const { package, name, cwd } = argv
+    const availableCodemodsInNodeModules = findAvailableCodemodsInNodeModules(cwd)
+    const availableCodemods = mergeCodemods(
+        availableCodemodsLocal,
+        availableCodemodsInNodeModules
+    )
 
     const filteredByPackage = package === 'all'
         ? availableCodemods
