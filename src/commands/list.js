@@ -29,7 +29,7 @@ module.exports.handler = argv => {
     const { package, name, cwd } = argv
     const availableCodemodsInNodeModules = findAvailableCodemodsInNodeModules(cwd)
     const availableCodemods = mergeCodemods(
-        availableCodemodsLocal,
+        availableCodemodsLocal.filter(([_, group]) => group.length),
         availableCodemodsInNodeModules
     )
 
