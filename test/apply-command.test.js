@@ -4,12 +4,12 @@ const path = require('path')
 const spawn = require('cross-spawn')
 
 const PATH_CODEMODS = path.join(__dirname, 'codemods')
-const PATH_RUN_SOURCE = path.join(__dirname, 'run-command-source-files')
-const PATH_RUN_EXPECTED = path.join(__dirname, 'run-command-expected-files')
-const PATH_RUN_ACTUAL = path.join(__dirname, 'run-command-actual-files')
+const PATH_RUN_SOURCE = path.join(__dirname, 'apply-command-source-files')
+const PATH_RUN_EXPECTED = path.join(__dirname, 'apply-command-expected-files')
+const PATH_RUN_ACTUAL = path.join(__dirname, 'apply-command-actual-files')
 
 describe('Command: run', () => {
-    beforeAll(() => {
+    beforeEach(() => {
         // ensure that the "actual" directory is not there
         fs.removeSync(PATH_RUN_ACTUAL)
 
