@@ -2,6 +2,6 @@ const { run } = require('jscodeshift/src/Runner')
 
 module.exports.exec = ({
     transformFile,
-    positionalArguments,
-}) => run(transformFile, positionalArguments, {})
-
+    files,
+    forward,
+}) => run(transformFile, files, forward)

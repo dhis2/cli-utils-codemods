@@ -18,26 +18,35 @@ module.exports.builder = yargs =>
             describe: 'Files or path the codemod should be applied to',
             type: 'array',
         })
+
         .option('package', {
             describe: 'The name of the package that contains the codemod',
             type: 'string',
+            default: '',
         })
         .option('name', {
             describe: 'Name of the codemod',
             type: 'string',
+            default: '',
         })
         .implies('package', 'name')
+
         .option('codemodPath', {
             describe: 'Direct path to codemod file',
             type: 'string',
             default: '',
         })
-        .conflicts('codemodPath', 'package')
-        .conflicts('codemodPath', 'name')
+
         .option('forward-args', {
             describe: 'Args that should be forwarded to the codemod',
             type: 'array',
             default: [],
+        })
+        .option('cwd', {
+            describe:
+                "The directory containing the project's node_modules directory",
+            type: 'string',
+            default: process.cwd(),
         })
 
 module.exports.handler = argv => {
@@ -47,6 +56,7 @@ module.exports.handler = argv => {
         package,
         forwardArgs,
         codemodPath,
+        cwd,
     } = argv
 
     const availableCodemodsInNodeModules = findAvailableCodemodsInNodeModules(cwd)
@@ -75,17 +85,17 @@ module.exports.handler = argv => {
                   process.exit(1)
               }
 
-              return codemod.path
+              return path.join(codemod.path, codemod.name)
           })()
 
     const forward = (forwardArgs || [])
         .map(forwardArg => forwardArg.split('='))
-        .map(([key, value]) => `--${key} ${value}`)
+        .reduce(
+            (all, [key, value]) => ({ ...all, [key]: value }),
+            {}
+        )
 
-    const result = exec({
-        transformFile,
-        positionalArguments: [...files, ...forward],
-    })
+    const result = exec({ transformFile, files, forward })
 
     return result.then(({ error }) => process.exit(error))
 }
