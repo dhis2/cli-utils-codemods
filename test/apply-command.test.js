@@ -3,33 +3,58 @@ const fs = require('fs-extra')
 const path = require('path')
 const spawn = require('cross-spawn')
 
-const PATH_CODEMODS = path.join(__dirname, 'codemods')
-const PATH_RUN_SOURCE = path.join(__dirname, 'apply-command-source-files')
-const PATH_RUN_EXPECTED = path.join(__dirname, 'apply-command-expected-files')
-const PATH_RUN_ACTUAL = path.join(__dirname, 'apply-command-actual-files')
+const FILES_PATH = path.join(__dirname, 'files-to-mod')
+const PATH_ACTUAL = path.join(FILES_PATH, 'actual-files')
 
-describe('Command: run', () => {
+describe('Command: apply', () => {
     beforeEach(() => {
         // ensure that the "actual" directory is not there
-        fs.removeSync(PATH_RUN_ACTUAL)
-
-        // copy source files so the test can work on them
-        fs.copySync(PATH_RUN_SOURCE, PATH_RUN_ACTUAL)
+        fs.removeSync(PATH_ACTUAL)
     })
 
-    it('should replace the pre 31.1.0 d2 package path with the updated one', () => {
+    it('should accept a direct path to a codemod', () => {
+        const codemods = path.join(__dirname, 'codemods')
+        const sourceFiles = path.join(FILES_PATH, 'apply-codemod-path-source-files')
+        const expectedFiles = path.join(FILES_PATH, 'apply-codemod-path-expected-files')
+
+        // copy source files so the test can work on them
+        fs.copySync(sourceFiles, PATH_ACTUAL)
+
         const result = spawn.sync('./bin/d2-utils-codemods', [
             // command
             'apply',
 
             // path with files to apply the codemod to
-            PATH_RUN_ACTUAL,
+            PATH_ACTUAL,
 
             // path to the codemod
             '--codemodPath',
-            path.join(PATH_CODEMODS, 'rename-foo.js')
+            path.join(codemods, 'rename-foo.js')
         ])
 
-        assertDirEqual(PATH_RUN_ACTUAL, PATH_RUN_EXPECTED)
+        assertDirEqual(PATH_ACTUAL, expectedFiles)
+    });
+
+    it('should use a codemod from a node_modules directory', () => {
+        const sourceFiles = path.join(FILES_PATH, 'apply-node-modules-mods-source-files')
+        const expectedFiles = path.join(FILES_PATH, 'apply-node-modules-mods-expected-files')
+
+        // copy source files so the test can work on them
+        fs.copySync(sourceFiles, PATH_ACTUAL)
+
+        const result = spawn.sync('./bin/d2-utils-codemods', [
+            // command
+            'apply',
+
+            // path with files to apply the codemod to
+            PATH_ACTUAL,
+
+            '--cwd', __dirname,
+            '--package', 'module1',
+            '--name', 'rename-foo.js',
+            '--forward-args', 'name=baz',
+        ])
+
+        assertDirEqual(PATH_ACTUAL, expectedFiles)
     });
 });
