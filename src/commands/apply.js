@@ -10,7 +10,7 @@ const {
 } = require('../utils/codemods/getCodemodByPackageAndName')
 const { makePaths } = require('../utils/makePaths.js')
 
-module.exports.command = 'apply <codemod> <files..>'
+module.exports.command = 'apply <codemod> [files..]'
 module.exports.alias = 'a'
 module.exports.desc = 'Applys a codemod on a given file/directory'
 
