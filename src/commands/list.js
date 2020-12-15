@@ -53,6 +53,6 @@ module.exports.handler = argv => {
     filteredByName.forEach(([groupName, group], index) => {
         if (index > 0) log.print('')
         log.print(groupName)
-        group.forEach(codemod => log.print(`  ${codemod.name}`))
+        group.forEach(codemod => log.print(`* ${groupName}:${codemod.name}`))
     })
 }

@@ -9,8 +9,22 @@ describe('Command: list', () => {
             { cwd: __dirname }
         )
 
+        console.log(result.stdout.toString())
+
         if (result.stderr.toString()) {
             console.log(result.stderr.toString())
         }
+
+        expect(result.stdout.toString()).toBe(
+            [
+                'module1 ',
+                '* module1:foo.js ',
+                '* module1:rename-foo.js ',
+                ' ',
+                'module2 ',
+                '* module2:bar.js ',
+                '',
+            ].join('\n')
+        )
     })
 })
