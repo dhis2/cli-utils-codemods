@@ -1,12 +1,16 @@
 const path = require('path')
-const { findAvailableCodemodsInNodeModules } = require('../findAvailableCodemodsInNodeModules')
-const { getDhis2NodeModulesDir } = require('../getDhis2NodeModulesDir')
+const {
+    findAvailableCodemodsInNodeModules,
+} = require('../findAvailableCodemodsInNodeModules')
 
-jest.mock('../getDhis2NodeModulesDir', () => ({
-    getDhis2NodeModulesDir: jest.fn(),
-}))
+describe('findAvailableCodemodsInNodeModules', () => {
+    const paths = {
+        DHIS2_NODE_MODULES: path.join(
+            __dirname,
+            'findAvailableCodemodsInNodeModules'
+        ),
+    }
 
-describe('getDhis2NodeModulesDir', () => {
     const fooPath = path.join(
         __dirname,
         'findAvailableCodemodsInNodeModules',
@@ -21,14 +25,8 @@ describe('getDhis2NodeModulesDir', () => {
         'codemods'
     )
 
-    beforeAll(() => {
-        getDhis2NodeModulesDir.mockImplementation(() => {
-            return path.join(__dirname, 'findAvailableCodemodsInNodeModules')
-        })
-    })
-
     it('should find all the codemods in the node_modules/@dhis2 dir', () => {
-        const actual = findAvailableCodemodsInNodeModules(__dirname)
+        const actual = findAvailableCodemodsInNodeModules(paths)
         const expected = [
             [
                 'module1',
@@ -59,5 +57,5 @@ describe('getDhis2NodeModulesDir', () => {
         ]
 
         expect(actual).toEqual(expected)
-    });
-});
+    })
+})

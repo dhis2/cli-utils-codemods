@@ -1,7 +1,12 @@
 const log = require('@dhis2/cli-helpers-engine').reporter
-const { availableCodemods: availableCodemodsLocal } = require('../utils/codemods/availableCodemods')
-const { findAvailableCodemodsInNodeModules } = require('../utils/codemods/findAvailableCodemodsInNodeModules')
-const { mergeCodemods } = require('../utils/codemods/mergeCodemods')
+const {
+    makeAvailableCodemods,
+} = require('../utils/codemods/makeAvailableCodemods.js')
+const {
+    findAvailableCodemodsInNodeModules,
+} = require('../utils/codemods/findAvailableCodemodsInNodeModules.js')
+const { mergeCodemods } = require('../utils/codemods/mergeCodemods.js')
+const { makePaths } = require('../utils/makePaths.js')
 
 module.exports.command = 'list'
 module.exports.alias = 'l'
@@ -27,10 +32,14 @@ module.exports.builder = yargs =>
         })
 
 module.exports.handler = argv => {
-    const availableCodemodsInNodeModules = findAvailableCodemodsInNodeModules(cwd)
     const { pkg, name, cwd } = argv
+    const paths = makePaths(cwd)
+    const availableCodemodsInNodeModules = findAvailableCodemodsInNodeModules(
+        cwd
+    )
     const availableCodemods = mergeCodemods(
-        availableCodemodsLocal.filter(([_, group]) => group.length),
+        // eslint-disable-next-line no-unused-vars
+        makeAvailableCodemods(paths).filter(([_, group]) => group.length),
         availableCodemodsInNodeModules
     )
 
@@ -39,14 +48,18 @@ module.exports.handler = argv => {
             ? availableCodemods
             : availableCodemods.filter(([packageName]) => pkg === packageName)
 
-    const filteredByName = name === ''
-        ? filteredByPackage
-        : filteredByPackage
-              .map(([packageName, codemodsGroup]) => [
-                  packageName,
-                  codemodsGroup.filter(codemod => codemod.name.includes(name))
-              ])
-              .filter(([_, codemodsGroup]) => codemodsGroup.length)
+    const filteredByName =
+        name === ''
+            ? filteredByPackage
+            : filteredByPackage
+                  .map(([packageName, codemodsGroup]) => [
+                      packageName,
+                      codemodsGroup.filter(codemod =>
+                          codemod.name.includes(name)
+                      ),
+                  ])
+                  // eslint-disable-next-line no-unused-vars
+                  .filter(([_, codemodsGroup]) => codemodsGroup.length)
 
     filteredByName.forEach(([groupName, group], index) => {
         if (index > 0) log.print('')

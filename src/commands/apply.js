@@ -1,12 +1,18 @@
 const log = require('@dhis2/cli-helpers-engine').reporter
-const fs = require('fs-extra')
 const path = require('path')
 
-const { availableCodemods: availableCodemodsLocal } = require('../utils/codemods/availableCodemods')
+const {
+    makeAvailableCodemods,
+} = require('../utils/codemods/makeAvailableCodemods.js')
 const { exec } = require('./apply/exec')
-const { findAvailableCodemodsInNodeModules } = require('../utils/codemods/findAvailableCodemodsInNodeModules')
-const { getCodemodByPackageAndName } = require('../utils/codemods/getPathByPackageAndName')
+const {
+    findAvailableCodemodsInNodeModules,
+} = require('../utils/codemods/findAvailableCodemodsInNodeModules')
+const {
+    getCodemodByPackageAndName,
+} = require('../utils/codemods/getCodemodByPackageAndName')
 const { mergeCodemods } = require('../utils/codemods/mergeCodemods')
+const { makePaths } = require('../utils/makePaths.js')
 
 module.exports.command = 'apply <files..>'
 module.exports.alias = 'a'
@@ -51,10 +57,14 @@ module.exports.builder = yargs =>
 
 module.exports.handler = argv => {
     const { name, files, pkg, forwardArgs, codemodPath, cwd } = argv
+    const paths = makePaths(cwd)
+    const availableCodemodsInNodeModules = findAvailableCodemodsInNodeModules(
+        paths
+    )
 
-    const availableCodemodsInNodeModules = findAvailableCodemodsInNodeModules(cwd)
     const availableCodemods = mergeCodemods(
-        availableCodemodsLocal.filter(([_, group]) => group.length),
+        // eslint-disable-next-line no-unused-vars
+        makeAvailableCodemods(paths).filter(([_, group]) => group.length),
         availableCodemodsInNodeModules
     )
 
@@ -62,15 +72,15 @@ module.exports.handler = argv => {
      * When testing, we can use a custom path to the codemods
      * When not testing, we try to get the path from the config
      */
-    let transformFile = codemodPath
+    const transformFile = codemodPath
         ? codemodPath.match(/^\//)
-              ? codemodPath
-              : path.join(process.cwd(), codemodPath)
+            ? codemodPath
+            : path.join(process.cwd(), codemodPath)
         : (() => {
               const [error, codemod] = getCodemodByPackageAndName(
                   pkg,
                   name,
-                  availableCodemods,
+                  availableCodemods
               )
 
               if (error) {
@@ -83,10 +93,7 @@ module.exports.handler = argv => {
 
     const forward = (forwardArgs || [])
         .map(forwardArg => forwardArg.split('='))
-        .reduce(
-            (all, [key, value]) => ({ ...all, [key]: value }),
-            {}
-        )
+        .reduce((all, [key, value]) => ({ ...all, [key]: value }), {})
 
     const result = exec({ transformFile, files, forward })
 

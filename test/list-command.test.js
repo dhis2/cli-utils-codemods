@@ -1,4 +1,3 @@
-const fs = require('fs-extra')
 const path = require('path')
 const spawn = require('cross-spawn')
 
@@ -9,5 +8,9 @@ describe('Command: list', () => {
             ['list'],
             { cwd: __dirname }
         )
-    });
-});
+
+        if (result.stderr.toString()) {
+            console.log(result.stderr.toString())
+        }
+    })
+})

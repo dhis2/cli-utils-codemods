@@ -6,12 +6,10 @@ const mergeGroupIntoConfig = (config, group) => {
     )
 
     if (existingIndex === -1) {
-        return [
-            ...config,
-            [moduleName, potentialCodemods],
-        ]
+        return [...config, [moduleName, potentialCodemods]]
     }
 
+    // eslint-disable-next-line no-unused-vars
     const [_, existingCodemods] = config[existingIndex]
 
     const mergedCodemods = potentialCodemods.reduce(
@@ -30,20 +28,14 @@ const mergeGroupIntoConfig = (config, group) => {
         existingCodemods
     )
 
-    config[existingIndex] = [
-        moduleName,
-        mergedCodemods,
-    ]
+    config[existingIndex] = [moduleName, mergedCodemods]
 
     return config
 }
 
 module.exports.mergeCodemods = (...codemodConfigs) => {
     // no initial value as we can start with the first entry
-    return codemodConfigs.reduce(
-        (merged, codemodConfig) => codemodConfig.reduce(
-            mergeGroupIntoConfig,
-            merged,
-        )
+    return codemodConfigs.reduce((merged, codemodConfig) =>
+        codemodConfig.reduce(mergeGroupIntoConfig, merged)
     )
 }
