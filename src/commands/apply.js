@@ -19,7 +19,7 @@ module.exports.builder = yargs =>
             type: 'array',
         })
 
-        .option('package', {
+        .option('pkg', {
             describe: 'The name of the package that contains the codemod',
             type: 'string',
             default: '',
@@ -50,14 +50,7 @@ module.exports.builder = yargs =>
         })
 
 module.exports.handler = argv => {
-    const {
-        name,
-        files,
-        package,
-        forwardArgs,
-        codemodPath,
-        cwd,
-    } = argv
+    const { name, files, pkg, forwardArgs, codemodPath, cwd } = argv
 
     const availableCodemodsInNodeModules = findAvailableCodemodsInNodeModules(cwd)
     const availableCodemods = mergeCodemods(
@@ -75,7 +68,7 @@ module.exports.handler = argv => {
               : path.join(process.cwd(), codemodPath)
         : (() => {
               const [error, codemod] = getCodemodByPackageAndName(
-                  package,
+                  pkg,
                   name,
                   availableCodemods,
               )

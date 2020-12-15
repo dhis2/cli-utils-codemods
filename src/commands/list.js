@@ -7,35 +7,37 @@ module.exports.command = 'list'
 module.exports.alias = 'l'
 module.exports.desc = ''
 
-module.exports.builder = yargs => yargs
-    .option('package', {
-        describe: 'Only show codemods of the this package',
-        type: 'string',
-        default: 'all'
-    })
-    .option('name', {
-        describe: 'Filters by a sequence in the names',
-        type: 'string',
-        default: '',
-    })
-    .option('cwd', {
-        describe:
-            "The directory containing the project's node_modules directory",
-        type: 'string',
-        default: process.cwd(),
-    })
+module.exports.builder = yargs =>
+    yargs
+        .option('pkg', {
+            describe: 'Only show codemods of the this package',
+            type: 'string',
+            default: 'all',
+        })
+        .option('name', {
+            describe: 'Filters by a sequence in the names',
+            type: 'string',
+            default: '',
+        })
+        .option('cwd', {
+            describe:
+                "The directory containing the project's node_modules directory",
+            type: 'string',
+            default: process.cwd(),
+        })
 
 module.exports.handler = argv => {
-    const { package, name, cwd } = argv
     const availableCodemodsInNodeModules = findAvailableCodemodsInNodeModules(cwd)
+    const { pkg, name, cwd } = argv
     const availableCodemods = mergeCodemods(
         availableCodemodsLocal.filter(([_, group]) => group.length),
         availableCodemodsInNodeModules
     )
 
-    const filteredByPackage = package === 'all'
-        ? availableCodemods
-        : availableCodemods.filter(([packageName]) => package === packageName)
+    const filteredByPackage =
+        pkg === 'all'
+            ? availableCodemods
+            : availableCodemods.filter(([packageName]) => pkg === packageName)
 
     const filteredByName = name === ''
         ? filteredByPackage
