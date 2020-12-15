@@ -2,7 +2,7 @@ const path = require('path')
 
 module.exports.makeAvailableCodemods = paths => {
     const resolveCodemod = pathSegments =>
-        path.join(paths.LOCAL_CODEMODS, ...pathSegments.split('/'))
+        path.join(paths.LOCAL_CODEMODS, ...pathSegments.split(path.sep))
 
     return [
         // contains groups that apply to mutliple repositories
