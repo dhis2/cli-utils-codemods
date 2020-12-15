@@ -30,12 +30,11 @@ describe('Command: apply', () => {
             // command
             'apply',
 
+            // path to the codemod
+            path.join(codemods, 'rename-foo.js'),
+
             // path with files to apply the codemod to
             PATH_ACTUAL,
-
-            // path to the codemod
-            '--codemodPath',
-            path.join(codemods, 'rename-foo.js'),
         ])
 
         if (result.stderr.toString()) {
@@ -62,17 +61,14 @@ describe('Command: apply', () => {
             // command
             'apply',
 
-            // path with files to apply the codemod to
+            // codemod
+            'module1:rename-foo.js',
+
+            // files
             PATH_ACTUAL,
 
-            '--cwd',
-            __dirname,
-            '--pkg',
-            'module1',
-            '--name',
-            'rename-foo.js',
-            '--forward-args',
-            'name=baz',
+            ...['--cwd', __dirname],
+            ...['--forward-args', 'name=baz'],
         ]
 
         const result = spawn.sync('./bin/d2-utils-codemods', args)

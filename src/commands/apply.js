@@ -10,33 +10,25 @@ const {
 } = require('../utils/codemods/getCodemodByPackageAndName')
 const { makePaths } = require('../utils/makePaths.js')
 
-module.exports.command = 'apply <files..>'
+module.exports.command = 'apply <codemod> <files..>'
 module.exports.alias = 'a'
 module.exports.desc = 'Applys a codemod on a given file/directory'
 
 module.exports.builder = yargs =>
     yargs
+        .positional('codemod', {
+            describe:
+                'Colon-separated node package & codemod name. OR a direct path to codemod file',
+            type: 'string',
+
+            // Needs to be a string, see
+            // https://github.com/yargs/yargs/issues/1393
+            demandOption: 'true',
+        })
         .positional('files', {
             describe: 'Files or path the codemod should be applied to',
             type: 'array',
-        })
-
-        .option('pkg', {
-            describe: 'The name of the package that contains the codemod',
-            type: 'string',
-            default: '',
-        })
-        .option('name', {
-            describe: 'Name of the codemod',
-            type: 'string',
-            default: '',
-        })
-        .implies('package', 'name')
-
-        .option('codemodPath', {
-            describe: 'Direct path to codemod file',
-            type: 'string',
-            default: '',
+            default: '**/*',
         })
 
         .option('forward-args', {
@@ -52,7 +44,7 @@ module.exports.builder = yargs =>
         })
 
 module.exports.handler = argv => {
-    const { name, files, pkg, forwardArgs, codemodPath, cwd } = argv
+    const { files, forwardArgs, codemod, cwd } = argv
     const paths = makePaths(cwd)
     const availableCodemods = findAvailableCodemodsInNodeModules(paths)
 
@@ -60,12 +52,13 @@ module.exports.handler = argv => {
      * When testing, we can use a custom path to the codemods
      * When not testing, we try to get the path from the config
      */
-    const transformFile = codemodPath
-        ? codemodPath.match(/^\//)
-            ? codemodPath
-            : path.join(process.cwd(), codemodPath)
+    const transformFile = !codemod.includes(':')
+        ? codemod.match(/^\//)
+            ? codemod
+            : path.join(process.cwd(), codemod)
         : (() => {
-              const [error, codemod] = getCodemodByPackageAndName(
+              const [pkg, name] = codemod.split(':')
+              const [error, codemodData] = getCodemodByPackageAndName(
                   pkg,
                   name,
                   availableCodemods
@@ -76,7 +69,7 @@ module.exports.handler = argv => {
                   process.exit(1)
               }
 
-              return path.join(codemod.path, codemod.name)
+              return path.join(codemodData.path, codemodData.name)
           })()
 
     const forward = (forwardArgs || [])
