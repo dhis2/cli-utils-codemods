@@ -1,11 +1,7 @@
 const log = require('@dhis2/cli-helpers-engine').reporter
 const {
-    makeAvailableCodemods,
-} = require('../utils/codemods/makeAvailableCodemods.js')
-const {
     findAvailableCodemodsInNodeModules,
 } = require('../utils/codemods/findAvailableCodemodsInNodeModules.js')
-const { mergeCodemods } = require('../utils/codemods/mergeCodemods.js')
 const { makePaths } = require('../utils/makePaths.js')
 
 module.exports.command = 'list'
@@ -34,14 +30,7 @@ module.exports.builder = yargs =>
 module.exports.handler = argv => {
     const { pkg, name, cwd } = argv
     const paths = makePaths(cwd)
-    const availableCodemodsInNodeModules = findAvailableCodemodsInNodeModules(
-        cwd
-    )
-    const availableCodemods = mergeCodemods(
-        // eslint-disable-next-line no-unused-vars
-        makeAvailableCodemods(paths).filter(([_, group]) => group.length),
-        availableCodemodsInNodeModules
-    )
+    const availableCodemods = findAvailableCodemodsInNodeModules(paths)
 
     const filteredByPackage =
         pkg === 'all'

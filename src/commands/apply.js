@@ -1,9 +1,6 @@
 const log = require('@dhis2/cli-helpers-engine').reporter
 const path = require('path')
 
-const {
-    makeAvailableCodemods,
-} = require('../utils/codemods/makeAvailableCodemods.js')
 const { exec } = require('./apply/exec')
 const {
     findAvailableCodemodsInNodeModules,
@@ -11,7 +8,6 @@ const {
 const {
     getCodemodByPackageAndName,
 } = require('../utils/codemods/getCodemodByPackageAndName')
-const { mergeCodemods } = require('../utils/codemods/mergeCodemods')
 const { makePaths } = require('../utils/makePaths.js')
 
 module.exports.command = 'apply <files..>'
@@ -58,15 +54,7 @@ module.exports.builder = yargs =>
 module.exports.handler = argv => {
     const { name, files, pkg, forwardArgs, codemodPath, cwd } = argv
     const paths = makePaths(cwd)
-    const availableCodemodsInNodeModules = findAvailableCodemodsInNodeModules(
-        paths
-    )
-
-    const availableCodemods = mergeCodemods(
-        // eslint-disable-next-line no-unused-vars
-        makeAvailableCodemods(paths).filter(([_, group]) => group.length),
-        availableCodemodsInNodeModules
-    )
+    const availableCodemods = findAvailableCodemodsInNodeModules(paths)
 
     /*
      * When testing, we can use a custom path to the codemods
