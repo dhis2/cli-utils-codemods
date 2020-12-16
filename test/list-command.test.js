@@ -9,8 +9,6 @@ describe('Command: list', () => {
             { cwd: __dirname }
         )
 
-        console.log(result.stdout.toString())
-
         if (result.stderr.toString()) {
             console.log(result.stderr.toString())
         }
