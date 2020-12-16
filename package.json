@@ -15,6 +15,7 @@
         "node": ">=10"
     },
     "scripts": {
+        "lint": "d2-style js check && d2-style text check",
         "test": "jest"
     },
     "author": "Viktor Varland <viktor@dhis2.org>",
