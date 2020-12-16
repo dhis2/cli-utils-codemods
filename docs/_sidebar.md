@@ -1,0 +1,4 @@
+-   Guides
+    -   [Listing available codemods](./guides/listing_available_codemods)
+    -   [Applying a codemod](./guides/applying_a_codemod)
+    -   [Adding a codemod](./guides/adding_a_codemod)

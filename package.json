@@ -16,7 +16,9 @@
     },
     "scripts": {
         "lint": "d2-style js check && d2-style text check",
-        "test": "jest"
+        "test": "jest",
+        "docs:build": "d2-utils-docsite build ./docs -o ./dist",
+        "docs:start": "d2-utils-docsite serve ./docs -o ./dist"
     },
     "author": "Viktor Varland <viktor@dhis2.org>",
     "contributors": [
