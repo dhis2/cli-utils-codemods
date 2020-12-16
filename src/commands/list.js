@@ -4,16 +4,16 @@ const {
 } = require('../utils/codemods/findAvailableCodemodsInNodeModules.js')
 const { makePaths } = require('../utils/makePaths.js')
 
-module.exports.command = 'list'
+module.exports.command = 'list [packages..]'
 module.exports.alias = 'l'
 module.exports.desc = ''
 
 module.exports.builder = yargs =>
     yargs
-        .option('pkg', {
+        .positional('packages', {
             describe: 'Only show codemods of the this package',
-            type: 'string',
-            default: 'all',
+            type: 'array',
+            default: [],
         })
         .option('name', {
             describe: 'Filters by a sequence in the names',
@@ -28,14 +28,16 @@ module.exports.builder = yargs =>
         })
 
 module.exports.handler = argv => {
-    const { pkg, name, cwd } = argv
+    const { packages, name, cwd } = argv
     const paths = makePaths(cwd)
     const availableCodemods = findAvailableCodemodsInNodeModules(paths)
 
     const filteredByPackage =
-        pkg === 'all'
+        packages.length === 0
             ? availableCodemods
-            : availableCodemods.filter(([packageName]) => pkg === packageName)
+            : availableCodemods.filter(([packageName]) =>
+                  packages.includes(packageName)
+              )
 
     const filteredByName =
         name === ''
