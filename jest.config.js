@@ -1,5 +1,3 @@
 module.exports = {
-    modulePathIgnorePatterns: [
-        'test/run-command-actual-files'
-    ]
+    modulePathIgnorePatterns: ['test/run-command-actual-files'],
 }
