@@ -55,10 +55,7 @@ const findCodemodsFolders = paths => {
 
     let packageJson
     try {
-        const packageJsonRaw = fs.readFileSync(paths.PACKAGE_JSON, {
-            encoding: 'utf8',
-        })
-        packageJson = JSON.parse(packageJsonRaw)
+        packageJson = require(paths.PACKAGE_JSON)
     } catch (e) {
         log.warn('Could not parse package.json')
         log.debug(`Path to package.json: ${paths.PACKAGE_JSON}`)
