@@ -20,7 +20,8 @@ If the output contains the following:
 * @dhis2/d2:31.1.0-change-imports.js
 ```
 
-Then `@dhis2/d2:31.1.0-change-imports.js` part can be copied and used:
+Then `@dhis2/d2:31.1.0-change-imports.js` is a valid codemod specifier which
+can be applied like this:
 
 ```
 d2-utils-codemods apply @dhis2/d2:31.1.0-change-imports.js
@@ -28,13 +29,13 @@ d2-utils-codemods apply @dhis2/d2:31.1.0-change-imports.js
 
 ## Listing all available codemods
 
-Listing the codemods can simply be done by using the `list` command:
+The `list` command will list all available codemods:
 
 ```
 d2-utils-codemods list
 ```
 
-The above command will print all available codemods, e. g. like this:
+This will print all available codemods, like this:
 
 ```
 @dhis2/cli-utils-cypress
@@ -53,7 +54,7 @@ the package's name:
 d2-utils-codemods list @dhis2/d2
 ```
 
-The above command will print all available codemods, e. g. like this:
+The above command will print all available codemods, like this:
 
 ```
 @dhis2/d2
@@ -62,14 +63,14 @@ The above command will print all available codemods, e. g. like this:
 
 ## Filtering the codemods by name
 
-You can search the codemods by providing the `--name` argument. It will find
-all codemods if their name contains the passed in value at any position.
+You can search the codemods by providing the `--name <searchKey>` argument. It
+will find all codemods which contain the specified `searchKey` in their names.
 
 ```
 d2-utils-codemods list --name change
 ```
 
-The above command will print all available codemods, e. g. like this:
+The above command will print all available codemods, like this:
 
 ```
 @dhis2/d2-ui
