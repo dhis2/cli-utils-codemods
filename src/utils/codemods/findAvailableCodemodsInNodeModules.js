@@ -23,6 +23,23 @@ const hasCodemods = codemodsPath =>
         return true
     }).length
 
+const getPathOfDependency = dependency => {
+    const packageJsonResolvePath = `${dependency}/package.json`
+
+    try {
+        const resolvedPath = require.resolve(
+            packageJsonResolvePath,
+            process.env.NODE_ENV === 'test'
+                ? { paths: [process.env.RESOLVE_PATH] }
+                : undefined
+        )
+
+        return path.dirname(resolvedPath)
+    } catch (e) {
+        return ''
+    }
+}
+
 /**
  * Tries to find the following dirs that contain .js files:
  *   - ${NODE_MODULES}/{{folder}}/codemods/
@@ -32,45 +49,62 @@ const hasCodemods = codemodsPath =>
  * @returns {String[]}
  */
 const findCodemodsFolders = paths => {
-    return fs
-        .readdirSync(paths.NODE_MODULES)
-        .filter(name => {
-            const curPath = path.join(paths.NODE_MODULES, name)
+    if (!fs.existsSync(paths.PACKAGE_JSON)) {
+        return []
+    }
 
-            if (isDotFolder(name)) return false
-            if (!isFolder(curPath)) return false
-
-            return true
+    let packageJson
+    try {
+        const packageJsonRaw = fs.readFileSync(paths.PACKAGE_JSON, {
+            encoding: 'utf8',
         })
-        .reduce((acc, cur) => {
-            const curPath = path.join(paths.NODE_MODULES, cur)
+        packageJson = JSON.parse(packageJsonRaw)
+    } catch (e) {
+        log.warn('Could not parse package.json')
+        log.debug(`Path to package.json: ${paths.PACKAGE_JSON}`)
+        return []
+    }
 
-            // Node module is not namespace and contains codemods
-            if (
-                isFolder(path.join(curPath, 'codemods')) &&
-                hasCodemods(path.join(curPath, 'codemods'))
-            ) {
-                return [...acc, cur]
-            }
+    if (!packageJson.dependencies && !packageJson.devDependencies) {
+        log.debug('No (dev/prod) dependencies found in package.json')
+        log.debug(`Path to package.json: ${paths.PACKAGE_JSON}`)
+        return []
+    }
 
-            // Node module is a namespace containing node modules that contain codemods
-            const curPathFolders = fs
-                .readdirSync(curPath)
-                .filter(
-                    name =>
-                        isNotDotFolder(name) &&
-                        isFolder(path.join(curPath, name, 'codemods')) &&
-                        hasCodemods(path.join(curPath, name, 'codemods'))
-                )
-                .map(name => `${cur}/${name}`)
+    const dependencies = [
+        ...Object.keys(packageJson.dependencies || {}),
+        ...Object.keys(packageJson.devDependencies || {}),
+    ]
 
-            return [...acc, ...curPathFolders]
-        }, [])
+    return dependencies.reduce((acc, dependency) => {
+        const depPath = getPathOfDependency(dependency)
+
+        if (!depPath) {
+            return acc
+        }
+
+        const codemodPath = path.join(depPath, 'codemods')
+
+        if (!isFolder(codemodPath)) {
+            return acc
+        }
+
+        if (!hasCodemods(codemodPath)) {
+            return acc
+        }
+
+        return [...acc, dependency]
+    }, [])
 }
 
 const extractCodemods = (paths, moduleName) => {
-    const { NODE_MODULES } = paths
-    const codemodsPath = path.join(NODE_MODULES, moduleName, 'codemods')
+    const depPath = getPathOfDependency(moduleName)
+
+    if (!depPath) {
+        return []
+    }
+
+    const codemodsPath = path.join(depPath, 'codemods')
 
     const codemodFiles = fs
         .readdirSync(codemodsPath)
@@ -89,16 +123,8 @@ const extractCodemods = (paths, moduleName) => {
     return codemodConfigs
 }
 
-module.exports.findAvailableCodemodsInNodeModules = paths => {
-    const { NODE_MODULES } = paths
-
-    if (!fs.pathExistsSync(NODE_MODULES)) {
-        log.debug(`Cound not find node_modules directory`)
-        return []
-    }
-
-    return findCodemodsFolders(paths).map(moduleName => [
+module.exports.findAvailableCodemodsInNodeModules = paths =>
+    findCodemodsFolders(paths).map(moduleName => [
         moduleName,
         extractCodemods(paths, moduleName),
     ])
-}

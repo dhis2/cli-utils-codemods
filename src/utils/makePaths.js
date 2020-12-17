@@ -1,6 +1,6 @@
 const path = require('path')
 
 module.exports.makePaths = cwd => {
-    const NODE_MODULES = path.join(cwd, 'node_modules')
-    return { NODE_MODULES }
+    const PACKAGE_JSON = path.join(cwd, 'package.json')
+    return { PACKAGE_JSON }
 }
