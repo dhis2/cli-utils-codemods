@@ -38,30 +38,30 @@ describe('Command: list', () => {
 
         expect(result.stdout.toString()).toBe(
             output([
-                'module1',
-                '* module1:foo.js',
-                '* module1:rename-foo.js',
+                '@dhis2/module1',
+                '* @dhis2/module1:foo.js',
+                '* @dhis2/module1:rename-foo.js',
                 '',
-                'module2',
-                '* module2:bar.js',
+                '@dhis2/module2',
+                '* @dhis2/module2:bar.js',
                 '',
-                'module3',
-                '* module3:foobar.js',
+                '@dhis2/module3',
+                '* @dhis2/module3:foobar.js',
             ])
         )
     })
 
     it('should show only the codemods of the supplied packages', () => {
-        const result = list(['module1', 'module2'])
+        const result = list(['@dhis2/module1', '@dhis2/module2'])
 
         expect(result.stdout.toString()).toBe(
             output([
-                'module1',
-                '* module1:foo.js',
-                '* module1:rename-foo.js',
+                '@dhis2/module1',
+                '* @dhis2/module1:foo.js',
+                '* @dhis2/module1:rename-foo.js',
                 '',
-                'module2',
-                '* module2:bar.js',
+                '@dhis2/module2',
+                '* @dhis2/module2:bar.js',
             ])
         )
     })
@@ -71,24 +71,24 @@ describe('Command: list', () => {
 
         expect(result.stdout.toString()).toBe(
             output([
-                'module2',
-                '* module2:bar.js',
+                '@dhis2/module2',
+                '* @dhis2/module2:bar.js',
                 '',
-                'module3',
-                '* module3:foobar.js',
+                '@dhis2/module3',
+                '* @dhis2/module3:foobar.js',
             ])
         )
     })
 
     it('should show only the codemods with the name option in its name of the supplied package', () => {
-        const result = list(['module2', '--name', 'bar'])
+        const result = list(['@dhis2/module2', '--name', 'bar'])
 
         expect(result.stdout.toString()).toBe(
             // Do not use a single line array to mimic actual output lines
             // eslint-disable-next-line prettier/prettier
             output([
-                'module2',
-                '* module2:bar.js',
+                '@dhis2/module2',
+                '* @dhis2/module2:bar.js',
             ])
         )
     })

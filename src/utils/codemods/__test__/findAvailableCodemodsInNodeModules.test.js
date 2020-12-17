@@ -5,7 +5,7 @@ const {
 
 describe('findAvailableCodemodsInNodeModules', () => {
     const paths = {
-        DHIS2_NODE_MODULES: path.join(
+        NODE_MODULES: path.join(
             __dirname,
             'findAvailableCodemodsInNodeModules'
         ),
@@ -14,14 +14,14 @@ describe('findAvailableCodemodsInNodeModules', () => {
     const fooPath = path.join(
         __dirname,
         'findAvailableCodemodsInNodeModules',
-        'module1',
+        '@dhis2/module1',
         'codemods'
     )
 
     const barPath = path.join(
         __dirname,
         'findAvailableCodemodsInNodeModules',
-        'module2',
+        '@dhis3/module2',
         'codemods'
     )
 
@@ -29,7 +29,7 @@ describe('findAvailableCodemodsInNodeModules', () => {
         const actual = findAvailableCodemodsInNodeModules(paths)
         const expected = [
             [
-                'module1',
+                '@dhis2/module1',
                 [
                     {
                         name: 'foo.js',
@@ -42,7 +42,7 @@ describe('findAvailableCodemodsInNodeModules', () => {
                 ],
             ],
             [
-                'module2',
+                '@dhis3/module2',
                 [
                     {
                         name: 'bar.js',

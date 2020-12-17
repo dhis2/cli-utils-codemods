@@ -6,6 +6,23 @@ const spawn = require('cross-spawn')
 const FILES_PATH = path.join(__dirname, 'files-to-mod')
 const PATH_ACTUAL = path.join(FILES_PATH, 'actual-files')
 
+const apply = options => {
+    const result = spawn.sync('./bin/d2-utils-codemods', [
+        // command
+        'apply',
+        ...options,
+    ])
+
+    if (result.stderr.toString()) {
+        console.log('STDOUT:')
+        console.log(result.stdout.toString())
+        console.log('STDERR:')
+        console.log(result.stderr.toString())
+    }
+
+    return result
+}
+
 describe('Command: apply', () => {
     beforeEach(() => {
         // ensure that the "actual" directory is not there
@@ -26,20 +43,13 @@ describe('Command: apply', () => {
         // copy source files so the test can work on them
         fs.copySync(sourceFiles, PATH_ACTUAL)
 
-        const result = spawn.sync('./bin/d2-utils-codemods', [
-            // command
-            'apply',
-
+        apply([
             // path to the codemod
             path.join(codemods, 'rename-foo.js'),
 
             // path with files to apply the codemod to
             PATH_ACTUAL,
         ])
-
-        if (result.stderr.toString()) {
-            console.log(result.stderr.toString())
-        }
 
         assertDirEqual(PATH_ACTUAL, expectedFiles)
     })
@@ -57,25 +67,16 @@ describe('Command: apply', () => {
         // copy source files so the test can work on them
         fs.copySync(sourceFiles, PATH_ACTUAL)
 
-        const args = [
-            // command
-            'apply',
-
+        apply([
             // codemod
-            'module1:rename-foo.js',
+            '@dhis2/module1:rename-foo.js',
 
             // files
             PATH_ACTUAL,
 
             ...['--cwd', __dirname],
             ...['--forward-args', 'name=baz'],
-        ]
-
-        const result = spawn.sync('./bin/d2-utils-codemods', args)
-
-        if (result.stderr.toString()) {
-            console.log(result.stderr.toString())
-        }
+        ])
 
         assertDirEqual(PATH_ACTUAL, expectedFiles)
     })
