@@ -4,10 +4,16 @@ const {
 } = require('../findAvailableCodemodsInNodeModules')
 
 describe('findAvailableCodemodsInNodeModules', () => {
+    process.env.RESOLVE_PATH = path.join(
+        __dirname,
+        'findAvailableCodemodsInNodeModules'
+    )
+
     const paths = {
-        NODE_MODULES: path.join(
+        PACKAGE_JSON: path.join(
             __dirname,
-            'findAvailableCodemodsInNodeModules'
+            'findAvailableCodemodsInNodeModules',
+            'package.json'
         ),
     }
 

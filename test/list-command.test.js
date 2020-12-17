@@ -5,7 +5,13 @@ const list = (options = []) => {
     const result = spawn.sync(
         path.join(__dirname, '..', 'bin', 'd2-utils-codemods'),
         ['list', ...options],
-        { cwd: __dirname }
+        {
+            cwd: __dirname,
+            env: {
+                ...process.env,
+                RESOLVE_PATH: path.join(__dirname, 'node_modules'),
+            },
+        }
     )
 
     if (result.stderr.toString()) {

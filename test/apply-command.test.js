@@ -7,15 +7,24 @@ const FILES_PATH = path.join(__dirname, 'files-to-mod')
 const PATH_ACTUAL = path.join(FILES_PATH, 'actual-files')
 
 const apply = options => {
-    const result = spawn.sync('./bin/d2-utils-codemods', [
-        // command
-        'apply',
-        ...options,
-    ])
+    const result = spawn.sync(
+        './bin/d2-utils-codemods',
+        ['apply', ...options],
+        {
+            env: {
+                ...process.env,
+                RESOLVE_PATH: path.join(__dirname, 'node_modules'),
+            },
+        }
+    )
 
-    if (result.stderr.toString()) {
-        console.log('STDOUT:')
-        console.log(result.stdout.toString())
+    if (result.error) {
+        console.error(result.error)
+    }
+
+    if (result.stderr && result.stderr.toString()) {
+        result.strout && console.log('STDOUT:')
+        result.strout && console.log(result.stdout.toString())
         console.log('STDERR:')
         console.log(result.stderr.toString())
     }
