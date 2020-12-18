@@ -82,11 +82,7 @@ const findCodemodsFolders = paths => {
 
         const codemodPath = path.join(depPath, 'codemods')
 
-        if (!isFolder(codemodPath)) {
-            return acc
-        }
-
-        if (!hasCodemods(codemodPath)) {
+        if (!isFolder(codemodPath) || !hasCodemods(codemodPath)) {
             return acc
         }
 
