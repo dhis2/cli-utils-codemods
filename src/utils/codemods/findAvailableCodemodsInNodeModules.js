@@ -23,17 +23,12 @@ const hasCodemods = codemodsPath =>
         return true
     }).length
 
-const getPathOfDependency = dependency => {
+const getPathOfDependency = (dependency, cwd) => {
     const packageJsonResolvePath = `${dependency}/package.json`
 
     try {
-        const resolvedPath = require.resolve(
-            packageJsonResolvePath,
-            process.env.NODE_ENV === 'test'
-                ? { paths: [process.env.RESOLVE_PATH] }
-                : undefined
-        )
-
+        const paths = [cwd]
+        const resolvedPath = require.resolve(packageJsonResolvePath, { paths })
         return path.dirname(resolvedPath)
     } catch (e) {
         return ''
@@ -74,7 +69,7 @@ const findCodemodsFolders = paths => {
     ]
 
     return dependencies.reduce((acc, dependency) => {
-        const depPath = getPathOfDependency(dependency)
+        const depPath = getPathOfDependency(dependency, paths.cwd)
 
         if (!depPath) {
             return acc
@@ -91,7 +86,7 @@ const findCodemodsFolders = paths => {
 }
 
 const extractCodemods = (paths, moduleName) => {
-    const depPath = getPathOfDependency(moduleName)
+    const depPath = getPathOfDependency(moduleName, paths.cwd)
 
     if (!depPath) {
         return []
