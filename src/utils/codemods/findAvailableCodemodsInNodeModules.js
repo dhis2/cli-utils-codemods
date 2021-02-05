@@ -18,7 +18,7 @@ const hasCodemods = codemodsPath =>
         const curPath = path.join(codemodsPath, curFile)
 
         if (isFolder(curPath)) return false
-        if (!curFile.match(/\.(j|t)sx?$/)) return false
+        if (!isDotJSFile(curFile)) return false
 
         return true
     }).length
