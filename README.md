@@ -14,6 +14,6 @@ under the [CLI](https://jira.dhis2.org/projects/CLI) project.
 
 Deep links:
 
--   [Bug](https://jira.dhis2.org/secure/CreateIssueDetails!init.jspa?pid=10703&issuetype=10006&components=11016)
--   [Feature](https://jira.dhis2.org/secure/CreateIssueDetails!init.jspa?pid=10703&issuetype=10300&components=11016)
--   [Task](https://jira.dhis2.org/secure/CreateIssueDetails!init.jspa?pid=10703&issuetype=10003&components=11016)
+-   [Bug](https://jira.dhis2.org/secure/CreateIssueDetails!init.jspa?pid=10703&issuetype=10006&components=11031)
+-   [Feature](https://jira.dhis2.org/secure/CreateIssueDetails!init.jspa?pid=10703&issuetype=10300&components=11031)
+-   [Task](https://jira.dhis2.org/secure/CreateIssueDetails!init.jspa?pid=10703&issuetype=10003&components=11031)
