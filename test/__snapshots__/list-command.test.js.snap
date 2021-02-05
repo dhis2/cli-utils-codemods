@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Command: list should show only the codemods of the supplied packages 1`] = `null`;
+
+exports[`Command: list should show only the codemods of the supplied packages 2`] = `""`;
+
+exports[`Command: list should show only the codemods with the name option in its name 1`] = `null`;
+
+exports[`Command: list should show only the codemods with the name option in its name 2`] = `""`;
+
+exports[`Command: list should show only the codemods with the name option in its name of the supplied package 1`] = `null`;
+
+exports[`Command: list should show only the codemods with the name option in its name of the supplied package 2`] = `""`;
+
+exports[`Command: list show all available codemods 1`] = `null`;
+
+exports[`Command: list show all available codemods 2`] = `""`;

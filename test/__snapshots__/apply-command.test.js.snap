@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Command: apply should accept a direct path to a codemod 1`] = `null`;
+
+exports[`Command: apply should accept a direct path to a codemod 2`] = `""`;
+
+exports[`Command: apply should use a codemod from a node_modules directory 1`] = `null`;
+
+exports[`Command: apply should use a codemod from a node_modules directory 2`] = `""`;

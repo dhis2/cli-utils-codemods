@@ -18,16 +18,8 @@ const apply = options => {
         }
     )
 
-    if (result.error) {
-        console.error(result.error)
-    }
-
-    if (result.stderr && result.stderr.toString()) {
-        result.strout && console.log('STDOUT:')
-        result.strout && console.log(result.stdout.toString())
-        console.log('STDERR:')
-        console.log(result.stderr.toString())
-    }
+    expect(result.error).toMatchSnapshot()
+    expect(result.stderr && result.stderr.toString()).toMatchSnapshot()
 
     return result
 }

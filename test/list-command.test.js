@@ -14,12 +14,8 @@ const list = (options = []) => {
         }
     )
 
-    if (result.stderr.toString()) {
-        console.log('STDOUT:')
-        console.log(result.stdout.toString())
-        console.log('STDERR:')
-        console.log(result.stderr.toString())
-    }
+    expect(result.error).toMatchSnapshot()
+    expect(result.stderr && result.stderr.toString()).toMatchSnapshot()
 
     return result
 }
