@@ -1,3 +1,16 @@
+# [2.0.0](https://github.com/dhis2/codemods/compare/v1.0.0...v2.0.0) (2021-02-05)
+
+
+### Code Refactoring
+
+* **list:** add docs and improve list cmd [BREAKING CHANGE] ([90c1007](https://github.com/dhis2/codemods/commit/90c100788da5683184ba7ef136043d3079e10882))
+
+
+### BREAKING CHANGES
+
+* **list:** This replaces the --pkg argument with a positional
+argument of type array, so multiple packages can be provided
+
 # 1.0.0 (2020-12-16)
 
 
