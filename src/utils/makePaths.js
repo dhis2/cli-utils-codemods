@@ -1,7 +1,6 @@
 const path = require('path')
 
 module.exports.makePaths = cwd => {
-    const DHIS2_NODE_MODULES = path.join(cwd, 'node_modules', '@dhis2')
-
-    return { DHIS2_NODE_MODULES }
+    const PACKAGE_JSON = path.join(cwd, 'package.json')
+    return { cwd, PACKAGE_JSON }
 }

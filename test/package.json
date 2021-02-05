@@ -1,0 +1,7 @@
+{
+    "dependencies": {
+        "@dhis2/module1": "0.0.0",
+        "@dhis2/module2": "0.0.0",
+        "@dhis2/module3": "0.0.0"
+    }
+}

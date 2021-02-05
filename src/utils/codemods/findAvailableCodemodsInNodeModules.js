@@ -2,31 +2,102 @@ const log = require('@dhis2/cli-helpers-engine').reporter
 const fs = require('fs-extra')
 const path = require('path')
 
-const isNotDotFolder = value => value !== '.' && value !== '..'
+const isDotFolder = name => name[0] === '.'
+
+const isNotDotFolder = name => !isDotFolder(name)
 
 const isDotJSFile = name => new RegExp('[.]js$').test(name)
 
-const extractCodemods = (paths, moduleName) => {
-    const { DHIS2_NODE_MODULES } = paths
-    const codemodsPath = path.join(DHIS2_NODE_MODULES, moduleName, 'codemods')
+const isFolder = path => {
+    if (!fs.existsSync(path)) return false
+    return fs.lstatSync(path).isDirectory()
+}
 
-    if (!fs.pathExistsSync(codemodsPath)) {
-        log.debug(
-            `Cound not find a codemods folder in node module '${moduleName}' directory`
-        )
+const hasCodemods = codemodsPath =>
+    !!fs.readdirSync(codemodsPath).filter(curFile => {
+        const curPath = path.join(codemodsPath, curFile)
 
+        if (isFolder(curPath)) return false
+        if (!isDotJSFile(curFile)) return false
+
+        return true
+    }).length
+
+const getPathOfDependency = (dependency, cwd) => {
+    const packageJsonResolvePath = `${dependency}/package.json`
+
+    try {
+        const paths = [cwd]
+        const resolvedPath = require.resolve(packageJsonResolvePath, { paths })
+        return path.dirname(resolvedPath)
+    } catch (e) {
+        return ''
+    }
+}
+
+/**
+ * Tries to find the following dirs that contain .js files:
+ *   - ${NODE_MODULES}/{{folder}}/codemods/
+ *   - ${NODE_MODULES}/{{namespace}}/{{folder}}/codemods/
+ *
+ * @param {Object} paths
+ * @returns {String[]}
+ */
+const findCodemodsFolders = paths => {
+    if (!fs.existsSync(paths.PACKAGE_JSON)) {
         return []
     }
+
+    let packageJson
+    try {
+        packageJson = require(paths.PACKAGE_JSON)
+    } catch (e) {
+        log.warn('Could not parse package.json')
+        log.debug(`Path to package.json: ${paths.PACKAGE_JSON}`)
+        return []
+    }
+
+    if (!packageJson.dependencies && !packageJson.devDependencies) {
+        log.debug('No (dev/prod) dependencies found in package.json')
+        log.debug(`Path to package.json: ${paths.PACKAGE_JSON}`)
+        return []
+    }
+
+    const dependencies = [
+        ...Object.keys(packageJson.dependencies || {}),
+        ...Object.keys(packageJson.devDependencies || {}),
+    ]
+
+    return dependencies.reduce((acc, dependency) => {
+        const depPath = getPathOfDependency(dependency, paths.cwd)
+
+        if (!depPath) {
+            return acc
+        }
+
+        const codemodPath = path.join(depPath, 'codemods')
+
+        if (!isFolder(codemodPath) || !hasCodemods(codemodPath)) {
+            return acc
+        }
+
+        return [...acc, dependency]
+    }, [])
+}
+
+const extractCodemods = (paths, moduleName) => {
+    const depPath = getPathOfDependency(moduleName, paths.cwd)
+
+    if (!depPath) {
+        return []
+    }
+
+    const codemodsPath = path.join(depPath, 'codemods')
 
     const codemodFiles = fs
         .readdirSync(codemodsPath)
         .filter(isNotDotFolder)
         .filter(isDotJSFile)
-
-    if (!codemodFiles.length) {
-        log.debug('no codemod files')
-        return []
-    }
 
     const codemodConfigs = codemodFiles.map(codemodName => {
         const foundCodemod = {
@@ -40,20 +111,8 @@ const extractCodemods = (paths, moduleName) => {
     return codemodConfigs
 }
 
-module.exports.findAvailableCodemodsInNodeModules = paths => {
-    const { DHIS2_NODE_MODULES } = paths
-
-    if (!fs.pathExistsSync(DHIS2_NODE_MODULES)) {
-        log.debug(`Cound not find node_modules directory`)
-        return []
-    }
-
-    const codemods = fs
-        .readdirSync(DHIS2_NODE_MODULES)
-        .filter(isNotDotFolder)
-        .map(moduleName => [moduleName, extractCodemods(paths, moduleName)])
-        // eslint-disable-next-line no-unused-vars
-        .filter(([_, codemods]) => codemods.length)
-
-    return codemods
-}
+module.exports.findAvailableCodemodsInNodeModules = paths =>
+    findCodemodsFolders(paths).map(moduleName => [
+        moduleName,
+        extractCodemods(paths, moduleName),
+    ])
