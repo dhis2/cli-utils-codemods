@@ -37,7 +37,7 @@
     },
     "devDependencies": {
         "@dhis2/cli-helpers-engine": "^2.1.0",
-        "@dhis2/cli-style": "^7.2.2",
+        "@dhis2/cli-style": "^8.1.0",
         "@dhis2/cli-utils-docsite": "^2.0.3",
         "assert-dir-equal": "^1.1.0",
         "cross-spawn": "^7.0.3",
