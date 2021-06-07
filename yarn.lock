@@ -586,13 +586,16 @@
     update-notifier "^3.0.0"
     yargs "^13.1.0"
 
-"@dhis2/cli-helpers-engine@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@dhis2/cli-helpers-engine/-/cli-helpers-engine-2.1.0.tgz#434c1cf3cfc3bd29636b7c8400c607fea28e929b"
-  integrity sha512-GOVR4YFjHAQicg7FTAAUINknAxvrmusY13ImIpigW3YLtdTwpOhkAO3spRr1E7wWrRG1AM9EytJ+x9zW3rAOHw==
+"@dhis2/cli-helpers-engine@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@dhis2/cli-helpers-engine/-/cli-helpers-engine-2.3.0.tgz#040cb9b2352fa618d9648a06226347f07ad9d15b"
+  integrity sha512-i46Q5mC+vNPdImut7GcfpNf2VSg3EWlL7CFTYTfJtjGrIj77mvNkR9lTSz51ZKCQgdSgTMhpcraI0TjW7RZvWw==
   dependencies:
     chalk "^3.0.0"
+    cross-spawn "^7.0.3"
+    find-up "^5.0.0"
     fs-extra "^8.0.1"
+    inquirer "^7.3.3"
     request "^2.88.0"
     tar "^4.4.8"
     update-notifier "^3.0.0"
