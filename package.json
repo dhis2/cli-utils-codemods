@@ -12,7 +12,7 @@
         "d2-utils-codemods": "bin/d2-utils-codemods"
     },
     "engines": {
-        "node": ">=10"
+        "node": ">=12"
     },
     "scripts": {
         "lint": "yarn lint:js && yarn lint:text",
