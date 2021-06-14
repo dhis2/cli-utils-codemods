@@ -1,7 +1,7 @@
-const assertDirEqual = require('assert-dir-equal')
-const fs = require('fs-extra')
 const path = require('path')
+const assertDirEqual = require('assert-dir-equal')
 const spawn = require('cross-spawn')
+const fs = require('fs-extra')
 
 const FILES_PATH = path.join(__dirname, 'files-to-mod')
 const PATH_ACTUAL = path.join(FILES_PATH, 'actual-files')

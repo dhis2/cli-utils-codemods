@@ -87,11 +87,7 @@ describe('Command: list', () => {
 
         expect(result.stdout.toString()).toBe(
             // Do not use a single line array to mimic actual output lines
-            // eslint-disable-next-line prettier/prettier
-            output([
-                '@dhis2/module2',
-                '* @dhis2/module2:bar.js',
-            ])
+            output(['@dhis2/module2', '* @dhis2/module2:bar.js'])
         )
     })
 })
