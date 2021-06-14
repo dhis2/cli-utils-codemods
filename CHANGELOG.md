@@ -1,3 +1,15 @@
+# [3.0.0](https://github.com/dhis2/codemods/compare/v2.0.0...v3.0.0) (2021-06-14)
+
+
+### chore
+
+* remove node 10 support ([b57555a](https://github.com/dhis2/codemods/commit/b57555a17fb3346b146d24b9f5a8aa20cbff4e5c))
+
+
+### BREAKING CHANGES
+
+* New minimum version for NodeJS is 12.x.
+
 # [2.0.0](https://github.com/dhis2/codemods/compare/v1.0.0...v2.0.0) (2021-02-05)
 
 
