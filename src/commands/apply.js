@@ -1,7 +1,5 @@
-const log = require('@dhis2/cli-helpers-engine').reporter
 const path = require('path')
-
-const { exec } = require('./apply/exec')
+const log = require('@dhis2/cli-helpers-engine').reporter
 const {
     findAvailableCodemodsInNodeModules,
 } = require('../utils/codemods/findAvailableCodemodsInNodeModules')
@@ -9,6 +7,7 @@ const {
     getCodemodByPackageAndName,
 } = require('../utils/codemods/getCodemodByPackageAndName')
 const { makePaths } = require('../utils/makePaths.js')
+const { exec } = require('./apply/exec')
 
 module.exports.command = 'apply <codemod> [files..]'
 module.exports.alias = 'a'
