@@ -25,10 +25,10 @@ const list = (options = []) => {
  * the test cases, as this could potentially change any time, depending on what
  * the command uses to print the lines
  */
-const output = lines => {
+const output = (lines) => {
     let newLines = lines
 
-    newLines = lines.map(line => `${line} `)
+    newLines = lines.map((line) => `${line} `)
     newLines = [...newLines, '']
 
     return newLines.join('\n')

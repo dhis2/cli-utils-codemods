@@ -8,7 +8,7 @@ module.exports.command = 'list [packages..]'
 module.exports.alias = 'l'
 module.exports.desc = ''
 
-module.exports.builder = yargs =>
+module.exports.builder = (yargs) =>
     yargs
         .positional('packages', {
             describe: 'Only show codemods of the this package',
@@ -27,7 +27,7 @@ module.exports.builder = yargs =>
             default: process.cwd(),
         })
 
-module.exports.handler = argv => {
+module.exports.handler = (argv) => {
     const { packages, name, cwd } = argv
     const paths = makePaths(cwd)
     const availableCodemods = findAvailableCodemodsInNodeModules(paths)
@@ -45,7 +45,7 @@ module.exports.handler = argv => {
             : filteredByPackage
                   .map(([packageName, codemodsGroup]) => [
                       packageName,
-                      codemodsGroup.filter(codemod =>
+                      codemodsGroup.filter((codemod) =>
                           codemod.name.includes(name)
                       ),
                   ])
@@ -53,8 +53,10 @@ module.exports.handler = argv => {
                   .filter(([_, codemodsGroup]) => codemodsGroup.length)
 
     filteredByName.forEach(([groupName, group], index) => {
-        if (index > 0) log.print('')
+        if (index > 0) {
+            log.print('')
+        }
         log.print(groupName)
-        group.forEach(codemod => log.print(`* ${groupName}:${codemod.name}`))
+        group.forEach((codemod) => log.print(`* ${groupName}:${codemod.name}`))
     })
 }

@@ -6,7 +6,7 @@ const fs = require('fs-extra')
 const FILES_PATH = path.join(__dirname, 'files-to-mod')
 const PATH_ACTUAL = path.join(FILES_PATH, 'actual-files')
 
-const apply = options => {
+const apply = (options) => {
     const result = spawn.sync(
         './bin/d2-utils-codemods',
         ['apply', ...options],
