@@ -13,7 +13,7 @@ module.exports.command = 'apply <codemod> [files..]'
 module.exports.alias = 'a'
 module.exports.desc = 'Applys a codemod on a given file/directory'
 
-module.exports.builder = yargs =>
+module.exports.builder = (yargs) =>
     yargs
         .positional('codemod', {
             describe:
@@ -42,7 +42,7 @@ module.exports.builder = yargs =>
             default: process.cwd(),
         })
 
-module.exports.handler = argv => {
+module.exports.handler = (argv) => {
     const { files, forwardArgs, codemod, cwd } = argv
     const paths = makePaths(cwd)
     const availableCodemods = findAvailableCodemodsInNodeModules(paths)
@@ -72,7 +72,7 @@ module.exports.handler = argv => {
           })()
 
     const forward = (forwardArgs || [])
-        .map(forwardArg => forwardArg.split('='))
+        .map((forwardArg) => forwardArg.split('='))
         .reduce((all, [key, value]) => ({ ...all, [key]: value }), {})
 
     const result = exec({ transformFile, files, forward })

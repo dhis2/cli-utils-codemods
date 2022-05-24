@@ -2,23 +2,29 @@ const path = require('path')
 const log = require('@dhis2/cli-helpers-engine').reporter
 const fs = require('fs-extra')
 
-const isDotFolder = name => name[0] === '.'
+const isDotFolder = (name) => name[0] === '.'
 
-const isNotDotFolder = name => !isDotFolder(name)
+const isNotDotFolder = (name) => !isDotFolder(name)
 
-const isDotJSFile = name => new RegExp('[.]js$').test(name)
+const isDotJSFile = (name) => new RegExp('[.]js$').test(name)
 
-const isFolder = path => {
-    if (!fs.existsSync(path)) return false
+const isFolder = (path) => {
+    if (!fs.existsSync(path)) {
+        return false
+    }
     return fs.lstatSync(path).isDirectory()
 }
 
-const hasCodemods = codemodsPath =>
-    !!fs.readdirSync(codemodsPath).filter(curFile => {
+const hasCodemods = (codemodsPath) =>
+    !!fs.readdirSync(codemodsPath).filter((curFile) => {
         const curPath = path.join(codemodsPath, curFile)
 
-        if (isFolder(curPath)) return false
-        if (!isDotJSFile(curFile)) return false
+        if (isFolder(curPath)) {
+            return false
+        }
+        if (!isDotJSFile(curFile)) {
+            return false
+        }
 
         return true
     }).length
@@ -43,7 +49,7 @@ const getPathOfDependency = (dependency, cwd) => {
  * @param {Object} paths
  * @returns {String[]}
  */
-const findCodemodsFolders = paths => {
+const findCodemodsFolders = (paths) => {
     if (!fs.existsSync(paths.PACKAGE_JSON)) {
         return []
     }
@@ -99,7 +105,7 @@ const extractCodemods = (paths, moduleName) => {
         .filter(isNotDotFolder)
         .filter(isDotJSFile)
 
-    const codemodConfigs = codemodFiles.map(codemodName => {
+    const codemodConfigs = codemodFiles.map((codemodName) => {
         const foundCodemod = {
             name: codemodName,
             path: codemodsPath,
@@ -111,8 +117,8 @@ const extractCodemods = (paths, moduleName) => {
     return codemodConfigs
 }
 
-module.exports.findAvailableCodemodsInNodeModules = paths =>
-    findCodemodsFolders(paths).map(moduleName => [
+module.exports.findAvailableCodemodsInNodeModules = (paths) =>
+    findCodemodsFolders(paths).map((moduleName) => [
         moduleName,
         extractCodemods(paths, moduleName),
     ])
